@@ -1,0 +1,26 @@
+name: Remote diagnostics
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnostics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Print diagnostics
+        run: |
+          set -eu
+          printf 'runner=%s\n' "$RUNNER_NAME"
+          printf 'workspace=%s\n' "$GITHUB_WORKSPACE"
+          printf 'ref=%s\n' "$GITHUB_REF_NAME"
+          printf 'commit=%s\n' "$GITHUB_SHA"
+          printf 'kernel='; uname -srmo
+          printf 'repo status:\n'
+          git status --short --branch
+          printf 'top-level files:\n'
+          find . -maxdepth 1 -mindepth 1 -printf '%f\n' | sort
